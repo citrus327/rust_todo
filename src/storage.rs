@@ -34,6 +34,7 @@ impl Storage {
     }
 
     pub fn sync(&self) -> std::io::Result<()> {
+        // FIXME: bad file descriptor
         let path = Path::new(&self.location);
         let json = serde_json::to_string(&self.todos)?;
 
