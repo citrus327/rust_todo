@@ -1,28 +1,28 @@
 #![allow(unused)]
 
-mod todos;
+mod cli;
+pub mod storage;
+pub mod todos;
 
-use clap::App;
-
-use crate::todos::{Storage, Todo};
-
-// #[derive(Parser)]
-// struct Cli {
-//     #[arg(help = "The name of the todo")]
-//     name: String,
-
-//     #[arg(long, short, help = "Mark todo as completed", name = "finished")]
-//     completed: bool,
-// }
+use clap::Parser;
+use cli::{Cli, Commands};
+use storage::Storage;
+use todos::Todo;
 
 fn main() {
+    let mut storage: Storage = Storage::default();
 
-    // let args = Cli::parse();
+    let cli = Cli::parse();
 
-    // let storage: Storage = Storage::default();
+    // You can check for the existence of subcommands, and if found use their
+    // matches just as you would the top level cmd
+    match &cli.commands {
+        Commands::Add(args) => {
+            &storage.add(Todo::new(args.name.as_str(), args.completed));
+        }
 
-    // storage.store(Todo {
-    //     name: args.name,
-    //     completed: args.completed,
-    // });
+        Commands::List => {
+            storage.list();
+        }
+    }
 }

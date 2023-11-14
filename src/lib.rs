@@ -1,14 +1,22 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
-}
+mod storage;
+mod todos;
 
 #[cfg(test)]
 mod tests {
+    use crate::todos::Todo;
+
     use super::*;
+    use storage::Storage;
 
     #[test]
     fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+        let mut storage = Storage::default();
+        let _ = &storage.add(Todo::new("New Todo", false));
+        let _ = &storage.add(Todo::new("New Todo", false));
+        // let _ = &storage.add(Todo::new("New Todo", false));
+        // let _ = &storage.add(Todo::new("New Todo", false));
+        // let _ = &storage.add(Todo::new("New Todo", false));
+
+        storage.list();
     }
 }
