@@ -10,7 +10,7 @@ use storage::Storage;
 use todos::Todo;
 
 fn main() {
-    let mut storage: Storage = Storage::default();
+    let mut storage: Storage = Storage::default(None);
 
     let cli = Cli::parse();
 

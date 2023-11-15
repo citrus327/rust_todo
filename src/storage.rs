@@ -1,7 +1,7 @@
 use crate::todos::Todo;
 use std::fs::File;
 use std::io::prelude::*;
-use std::path::{Path, PathBuf};
+use std::path::{PathBuf};
 use std::{env, fs};
 
 pub struct Storage {
@@ -10,21 +10,29 @@ pub struct Storage {
 }
 
 impl Storage {
-    fn get_all_todos(&self) -> Vec<Todo> {
-        let file = fs::read_to_string(&self.location).expect("The file is read");
-
-        let result: Vec<Todo> = serde_json::from_str(&file).expect("The todo is converted");
-
-        return result;
-    }
-
-    pub fn default() -> Self {
+    pub fn default(file_path: Option<&str>) -> Self {
         let cwd = env::current_dir().unwrap();
-        let cwd = cwd.join("todo.json");
+        let location: PathBuf;
+        if let Some(path) = file_path {
+            location = cwd.join(path);
+        } else {
+            location = cwd.join("todo.json");
+            println!("Using default storage location, {}", location.to_string_lossy());
+        }
+
+        let mut result: Vec<Todo> = vec![];
+        if let Ok(_) = File::open(&location) {
+            if let Ok(content) = fs::read_to_string(&location) {
+                result = serde_json::from_str(content.as_str()).expect("Todo is read");
+            };
+        } else {
+            let _ = File::create(&location);
+            result = vec![];
+        }
 
         Self {
-            location: cwd,
-            todos: vec![],
+            location: location,
+            todos: result,
         }
     }
 
@@ -34,22 +42,13 @@ impl Storage {
     }
 
     pub fn sync(&self) -> std::io::Result<()> {
-        // FIXME: bad file descriptor
-        let path = Path::new(&self.location);
         let json = serde_json::to_string(&self.todos)?;
-
-        if path.exists() {
-            let mut file = File::open(&self.location)?;
-            file.write_all(json.as_bytes())
-        } else {
-            let mut file = File::create(&self.location)?;
-            file.write_all(json.as_bytes())
-        }
+        let mut file = File::create(&self.location)?;
+        file.write_all(json.as_bytes())
     }
 
     pub fn list(&self) {
-        let todos = self.get_all_todos();
-        for todo in todos {
+        for todo in &self.todos {
             todo.pretty_print()
         }
     }
