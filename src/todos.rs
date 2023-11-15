@@ -8,10 +8,10 @@ pub struct Todo {
 
 impl Todo {
     pub fn new(name: &str, completed: bool) -> Self {
-        return Self {
+        Self {
             name: name.to_string(),
             completed,
-        };
+        }
     }
 
     pub fn pretty_print(&self) {

@@ -21,10 +21,10 @@ mod tests {
     }
 
     fn option () {
-        if let Some(num) = Some(6) {
-            5 as i32
+        if let Some(_num) = Some(6) {
+            5_i32
         } else {
-            6 as i32
+            6_i32
         };
     }
 }

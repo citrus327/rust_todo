@@ -31,7 +31,7 @@ impl Storage {
         }
 
         Self {
-            location: location,
+            location,
             todos: result,
         }
     }
