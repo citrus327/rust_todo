@@ -10,9 +10,9 @@ use storage::Storage;
 use todos::Todo;
 
 fn main() {
-    let cli = Cli::parse(); 
+    let cli = Cli::parse();
     let location: String = cli.location.unwrap_or("todo.json".to_string());
-    let mut storage: Storage = Storage::default(Some(location.as_str()));
+    let mut storage: Storage = Storage::new(Some(location.as_str()));
 
     match cli.commands {
         Commands::Add(args) => {
@@ -20,7 +20,7 @@ fn main() {
         }
 
         Commands::List => {
-            storage.list();
+            storage.pretty_print();
         }
     }
 }

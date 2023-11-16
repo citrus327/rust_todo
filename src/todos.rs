@@ -14,6 +14,10 @@ impl Todo {
         }
     }
 
+    pub fn set_name(&mut self, name: &str) {
+        self.name = name.to_string();
+    }
+
     pub fn pretty_print(&self) {
         println!("Name: {}, Completed: {}", self.name, self.completed)
     }
