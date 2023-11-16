@@ -27,9 +27,9 @@ mod tests {
         storage.add("t2", false);
         storage.add("t3", false);
         storage.add("t4", false);
-        storage.add("t5", false);
+        let id = storage.add("t5", false);
 
         assert_eq!(storage.get_todos().len(), 5);
-        assert_eq!(get_newest_id(&storage), 5);
+        assert_eq!(get_newest_id(&storage), id + 1);
     }
 }
