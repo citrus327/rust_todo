@@ -4,6 +4,10 @@ use clap::{Args, Parser, Subcommand};
 #[command(author, version, about, long_about = None)]
 #[command(propagate_version = true)]
 pub struct Cli {
+
+    #[arg(short, long, help="The relative path of json file")]
+    pub location: Option<String>,
+
     #[command(subcommand)]
     pub commands: Commands,
 }
@@ -22,4 +26,6 @@ pub struct AddArgs {
 
     #[arg(short, long)]
     pub completed: bool,
+
+    
 }
