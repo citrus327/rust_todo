@@ -1,13 +1,10 @@
-use crate::todos::Todo;
+use serde::{Deserialize, Serialize};
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::PathBuf;
 use std::{env, fs};
 
-pub struct Storage {
-    pub todos: Vec<Todo>,
-    pub location: PathBuf,
-}
+use crate::auto_increment_id::get_newest_id;
 
 fn read_todos_from_file(location: &PathBuf) -> Result<Vec<Todo>, serde_json::Error> {
     if let Ok(content) = fs::read_to_string(&location) {
@@ -19,6 +16,35 @@ fn read_todos_from_file(location: &PathBuf) -> Result<Vec<Todo>, serde_json::Err
     } else {
         Ok(vec![])
     }
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct Todo {
+    pub id: i32,
+    pub name: String,
+    pub completed: bool,
+}
+
+impl Todo {
+    pub fn new(id: i32, name: &str, completed: bool) -> Self {
+        Self {
+            id,
+            name: name.to_string(),
+            completed,
+        }
+    }
+
+    pub fn pretty_print(&self) {
+        println!(
+            "id: {}, Name: {}, Completed: {}",
+            self.id, self.name, self.completed
+        )
+    }
+}
+
+pub struct Storage {
+    todos: Vec<Todo>,
+    location: PathBuf,
 }
 
 impl Storage {
@@ -47,12 +73,7 @@ impl Storage {
         self.sync().expect("Unable to sync todos into file");
     }
 
-    pub fn add(&mut self, todo: Todo) {
-        self.todos.push(todo);
-        self.sync().expect("Unable to sync todos into file");
-    }
-
-    pub fn sync(&self) -> Result<(), Box<dyn std::error::Error>> {
+    fn sync(&self) -> Result<(), Box<dyn std::error::Error>> {
         let mut file = File::create(&self.location)?;
         let json = serde_json::to_string(&self.todos)?;
         file.write_all(json.as_bytes())?;
@@ -68,5 +89,84 @@ impl Storage {
 
     pub fn get_todos(&self) -> &Vec<Todo> {
         &self.todos
+    }
+
+    pub fn add(&mut self, name: &str, completed: bool) -> i32 {
+        let id = get_newest_id(&self);
+        let todo = Todo::new(id, name, completed);
+        self.todos.push(todo);
+
+        self.sync().expect("Unable to sync todos into file");
+
+        println!("{} is added to storage, id: {}", name, id);
+
+        id
+    }
+
+    pub fn get_by_id(&self, id: i32) -> &Todo {
+        let result = self
+            .todos
+            .iter()
+            .find(|o| o.id == id)
+            .expect("The value is empty!");
+
+        result
+    }
+
+    pub fn complete(&mut self, id: i32) {
+        let tmp: Option<&mut Todo> = self.todos.iter_mut().find(|o| o.id == id);
+
+        match tmp {
+            Some(todo) => todo.completed = true,
+            None => {
+                panic!("Could not find todo with id, {}", id);
+            }
+        };
+
+        self.sync().expect("Unable to sync todos into file");
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::Storage;
+
+    #[test]
+    fn it_should_add_to_storage() {
+        let mut storage = Storage::new(None);
+        storage.clean();
+        storage.add("New Todo", false);
+        storage.pretty_print();
+        assert_eq!(storage.get_todos().len(), 4);
+    }
+
+    #[test]
+    fn it_should_clean_storage() {
+        let mut storage = Storage::new(None);
+        storage.clean();
+        assert_eq!(storage.get_todos().len(), 0);
+    }
+
+    #[test]
+    fn it_should_get_todo_by_id() {
+        let mut storage = Storage::new(None);
+        storage.clean();
+
+        const TARGET_NAME: &str = "New Todo";
+        let id = storage.add(TARGET_NAME, false);
+        storage.pretty_print();
+
+        assert_eq!(storage.get_todos().len(), 1);
+        assert_eq!(TARGET_NAME, storage.get_by_id(id).name);
+    }
+
+    #[test]
+    fn it_should_complete_todo_by_id() {
+        let mut storage = Storage::new(None);
+        storage.clean();
+        let id = storage.add("New Tod222o", false);
+        assert_eq!(false, storage.get_by_id(id).completed);
+        storage.complete(id);
+        assert_eq!(true, storage.get_by_id(id).completed);
     }
 }

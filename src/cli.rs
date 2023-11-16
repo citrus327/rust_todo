@@ -4,8 +4,7 @@ use clap::{Args, Parser, Subcommand};
 #[command(author, version, about, long_about = None)]
 #[command(propagate_version = true)]
 pub struct Cli {
-
-    #[arg(short, long, help="The relative path of json file")]
+    #[arg(short, long, help = "The relative path of json file")]
     pub location: Option<String>,
 
     #[command(subcommand)]
@@ -17,6 +16,10 @@ pub enum Commands {
     Add(AddArgs),
 
     List,
+
+    Complete(CompleteArgs),
+
+    Clean,
 }
 
 #[derive(Args)]
@@ -26,6 +29,10 @@ pub struct AddArgs {
 
     #[arg(short, long)]
     pub completed: bool,
+}
 
-    
+#[derive(Args)]
+pub struct CompleteArgs {
+    #[arg(name = "TODO_ID", help = "The id of the To-do")]
+    pub id: i32,
 }

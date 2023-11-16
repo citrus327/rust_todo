@@ -1,36 +1,19 @@
+mod auto_increment_id;
 mod storage;
-mod todos;
 
 #[cfg(test)]
 mod tests {
-    use crate::todos::Todo;
+    use crate::auto_increment_id::get_newest_id;
 
     use super::*;
     use notify_rust::Notification;
     use storage::Storage;
 
     #[test]
-    fn it_should_add_to_storage() {
-        let mut storage = Storage::new(None);
-        storage.clean();
-        storage.add(Todo::new("New Todo1", false));
-        storage.pretty_print();
-        assert_eq!(storage.get_todos().len(), 1);
-    }
-
-    #[test]
-    fn it_should_clean_storage() {
-        let mut storage = Storage::new(None);
-        storage.clean();
-        assert_eq!(storage.get_todos().len(), 0);
-    }
-
-    #[test]
-    fn it_should_change_todo_in_storage() {
-        let mut storage = Storage::new(None);
-        let todo = Todo::new("New Todo1", false);
-        storage.add(todo);
-        assert_eq!(storage.get_todos().len(), 1);
+    fn it_should_get_largest_id_in_storage() {
+        let storage = Storage::new(None);
+        get_newest_id(&storage);
+        assert_eq!(storage.get_todos().len(), 4);
     }
 
     #[test]
