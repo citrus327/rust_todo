@@ -22,9 +22,6 @@ jobs:
           toolchain: stable
           override: true
 
-      - run: cargo install cargo-bump
-      - run: cargo bump patch --git-tag
-      - run: git push
       - run: cargo publish --token ${CRATE_TOKEN}
         env:
           CRATES_TOKEN: ${{ secrets.CRATE_TOKEN }}
