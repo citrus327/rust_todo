@@ -42,6 +42,7 @@ directories = "5.0" # get path of sys dir
 9. Macros
 
 
-## Tests
+## Development
 
+For testing:
 `cargo test -- --test-threads 1`
