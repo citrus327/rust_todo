@@ -11,6 +11,8 @@ jobs:
   publish:
     name: Publish
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout sources
         uses: actions/checkout@v2
@@ -25,3 +27,10 @@ jobs:
       - run: cargo publish --token ${CRATE_TOKEN}
         env:
           CRATE_TOKEN: ${{ secrets.CRATE_TOKEN }}
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "release.tar.gz,foo/*.txt"
+          bodyFile: "body.md"
+          token: ${{ secrets.GITHUB_TOKEN }}
