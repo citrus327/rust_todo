@@ -1,8 +1,10 @@
+use prettytable::{row, table, Cell, Row, Table};
 use serde::{Deserialize, Serialize};
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::PathBuf;
 use std::{env, fs};
+extern crate prettytable;
 
 use crate::auto_increment_id::get_newest_id;
 
@@ -32,13 +34,6 @@ impl Todo {
             name: name.to_string(),
             completed,
         }
-    }
-
-    pub fn pretty_print(&self) {
-        println!(
-            "id: {}, Name: {}, Completed: {}",
-            self.id, self.name, self.completed
-        )
     }
 }
 
@@ -82,9 +77,27 @@ impl Storage {
     }
 
     pub fn pretty_print(&self) {
-        for todo in &self.todos {
-            todo.pretty_print()
+        let rows: Vec<Row> = self
+            .todos
+            .iter()
+            .map(|o| {
+                Row::new(vec![
+                    Cell::new(o.name.as_str()),
+                    Cell::new(if o.completed { "Done" } else { "Not Completed" }),
+                ])
+            })
+            .collect();
+
+        let mut table = Table::new();
+
+        table.add_row(row!["Todo Name", "Status"]);
+        // Add a row per time
+        for row in rows {
+            table.add_row(row);
         }
+
+        // Print the table to stdout
+        table.printstd();
     }
 
     pub fn get_todos(&self) -> &Vec<Todo> {
@@ -108,22 +121,36 @@ impl Storage {
             .todos
             .iter()
             .find(|o| o.id == id)
-            .expect("The value is empty!");
+            .expect("Target To-Do Not found!");
 
         result
     }
 
     pub fn complete(&mut self, id: i32) {
-        let tmp: Option<&mut Todo> = self.todos.iter_mut().find(|o| o.id == id);
-
-        match tmp {
-            Some(todo) => todo.completed = true,
-            None => {
-                panic!("Could not find todo with id, {}", id);
-            }
-        };
-
+        self.update(id, |o| o.completed = true);
         self.sync().expect("Unable to sync todos into file");
+    }
+
+    pub fn uncomplete(&mut self, id: i32) {
+        self.update(id, |o| o.completed = false);
+        self.sync().expect("Unable to sync todos into file");
+    }
+
+    pub fn edit_name(&mut self, id: i32, name: &str) {
+        self.update(id, |o| o.name = name.to_string());
+        self.sync().expect("Unable to sync todos into file");
+    }
+
+    fn update<F>(&mut self, id: i32, closure: F)
+    where
+        F: FnOnce(&mut Todo),
+    {
+        let todo = self
+            .todos
+            .iter_mut()
+            .find(|o| o.id == id)
+            .expect("Target To-Do Not found!");
+        closure(todo)
     }
 }
 
@@ -131,26 +158,38 @@ impl Storage {
 mod tests {
     use super::Storage;
 
-    #[test]
-    fn it_should_add_to_storage() {
+    fn prepare() -> Storage {
         let mut storage = Storage::new(None);
         storage.clean();
-        storage.add("New Todo", false);
+
+        storage
+    }
+
+    #[test]
+    fn it_should_add_to_storage() {
+        let mut storage = prepare();
         storage.pretty_print();
+        storage.add("New Todo", false);
+        storage.add("New Todo", false);
+        storage.add("New Todo", false);
+        storage.add("New Todo", false);
         assert_eq!(storage.get_todos().len(), 4);
     }
 
     #[test]
     fn it_should_clean_storage() {
-        let mut storage = Storage::new(None);
+        let mut storage = prepare();
+        storage.add("New Todo", false);
+        storage.add("New Todo", false);
+        storage.add("New Todo", false);
+        storage.add("New Todo", false);
         storage.clean();
         assert_eq!(storage.get_todos().len(), 0);
     }
 
     #[test]
     fn it_should_get_todo_by_id() {
-        let mut storage = Storage::new(None);
-        storage.clean();
+        let mut storage = prepare();
 
         const TARGET_NAME: &str = "New Todo";
         let id = storage.add(TARGET_NAME, false);
@@ -162,11 +201,43 @@ mod tests {
 
     #[test]
     fn it_should_complete_todo_by_id() {
-        let mut storage = Storage::new(None);
-        storage.clean();
+        let mut storage = prepare();
+
         let id = storage.add("New Tod222o", false);
         assert_eq!(false, storage.get_by_id(id).completed);
         storage.complete(id);
         assert_eq!(true, storage.get_by_id(id).completed);
+    }
+
+    #[test]
+    fn it_should_uncomplete_todo_by_id() {
+        let mut storage = prepare();
+        let id = storage.add("New Tod222o", true);
+        assert_eq!(true, storage.get_by_id(id).completed);
+        storage.uncomplete(id);
+        assert_eq!(false, storage.get_by_id(id).completed);
+    }
+
+    #[test]
+    fn it_should_edit_name_by_id() {
+        let mut storage = prepare();
+
+        const ORIGINAL_NAME: &str = "New Todo";
+        const NEW_NAME: &str = "Todo New";
+        let id = storage.add(ORIGINAL_NAME, true);
+        assert_eq!(ORIGINAL_NAME, storage.get_by_id(id).name);
+        storage.edit_name(id, NEW_NAME);
+        assert_eq!(NEW_NAME, storage.get_by_id(id).name);
+    }
+
+    #[test]
+    fn it_should_pretty_print() {
+        let mut storage = prepare();
+        storage.add("Finish reading", false);
+        storage.add("Finish rust todo", false);
+        storage.add("dinner", false);
+        storage.add("breakfast", false);
+
+        storage.pretty_print();
     }
 }

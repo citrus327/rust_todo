@@ -29,5 +29,9 @@ fn main() {
         Commands::Clean => {
             storage.clean();
         }
+
+        Commands::Complete(args) => {
+            storage.complete(args.id);
+        }
     }
 }
