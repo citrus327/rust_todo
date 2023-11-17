@@ -4,17 +4,18 @@
 
 A simple To-do app that I use to get started with rust lang.
 
-To-dos will be stored in a json file under `~/rtodo/todo.json` by default.
+To-dos will be stored in a json file under ProjectDir by default.
+MACOS: `/Users/<user_name>/Library/Application Support/RTODO/todo.json`
 
 ## Usage
 
 ```bash
 rtodo add "This is a todo"
 rtodo add "This is a todo" --complete
-rtodo remove [id]
-rtodo search [name]
 rtodo complete [id]
+rtodo uncomplete [id]
 rtodo list
+rtodo clean
 ```
 
 ## Dependencies
@@ -26,6 +27,7 @@ serde_json = "1.0.108" # json (de)serialize
 clap = { version = "4.4.7", features = ["derive", "cargo"] } # Cli argument parser
 notify-rust = "4" # XDG notification
 prettytable-rs = "^0.10" # print data in table format
+directories = "5.0" # get path of sys dir
 ```
 
 ## Knowledege

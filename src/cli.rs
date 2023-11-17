@@ -13,6 +13,8 @@ pub struct Cli {
 
 #[derive(Subcommand)]
 pub enum Commands {
+    Init,
+
     Add(AddArgs),
 
     List,

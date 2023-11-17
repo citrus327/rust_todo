@@ -1,19 +1,9 @@
 mod auto_increment_id;
+mod dir;
 mod storage;
 
 #[cfg(test)]
 mod tests {
-    use notify_rust::Notification;
-
-    #[test]
-    fn test_notify() {
-        let _ = Notification::new()
-            .summary(env!("CARGO_PKG_NAME"))
-            .body("This will almost look like a real firefox notification.")
-            .icon("firefox")
-            .show();
-    }
-
     #[test]
     fn test_print_table() {
         println!(

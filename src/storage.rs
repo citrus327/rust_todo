@@ -1,4 +1,3 @@
-use notify_rust::Notification;
 use prettytable::{row, Cell, Row, Table};
 use serde::{Deserialize, Serialize};
 use std::fs::File;
@@ -8,13 +7,7 @@ use std::{env, fs};
 extern crate prettytable;
 
 use crate::auto_increment_id::get_newest_id;
-
-enum Action {
-    Add,
-    Edit,
-    Complete,
-    UnComplete,
-}
+use crate::dir::get_todo_file_path;
 
 fn read_todos_from_file(location: &PathBuf) -> Result<Vec<Todo>, serde_json::Error> {
     if let Ok(content) = fs::read_to_string(&location) {
@@ -85,6 +78,10 @@ impl Storage {
     }
 
     pub fn pretty_print(&self) {
+        println!(
+            "To-do file location: {:?}",
+            get_todo_file_path().unwrap().to_string_lossy()
+        );
         let rows: Vec<Row> = self
             .todos
             .iter()
