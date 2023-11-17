@@ -34,3 +34,4 @@ jobs:
           artifacts: "release.tar.gz,foo/*.txt"
           bodyFile: "body.md"
           token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref }}
