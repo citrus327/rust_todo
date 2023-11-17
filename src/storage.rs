@@ -1,4 +1,5 @@
-use prettytable::{row, table, Cell, Row, Table};
+use notify_rust::Notification;
+use prettytable::{row, Cell, Row, Table};
 use serde::{Deserialize, Serialize};
 use std::fs::File;
 use std::io::prelude::*;
@@ -7,6 +8,13 @@ use std::{env, fs};
 extern crate prettytable;
 
 use crate::auto_increment_id::get_newest_id;
+
+enum Action {
+    Add,
+    Edit,
+    Complete,
+    UnComplete,
+}
 
 fn read_todos_from_file(location: &PathBuf) -> Result<Vec<Todo>, serde_json::Error> {
     if let Ok(content) = fs::read_to_string(&location) {
@@ -82,6 +90,7 @@ impl Storage {
             .iter()
             .map(|o| {
                 Row::new(vec![
+                    Cell::new(o.id.to_string().as_str()),
                     Cell::new(o.name.as_str()),
                     Cell::new(if o.completed { "Done" } else { "Not Completed" }),
                 ])
@@ -90,7 +99,7 @@ impl Storage {
 
         let mut table = Table::new();
 
-        table.add_row(row!["Todo Name", "Status"]);
+        table.add_row(row!["ID", "Todo Name", "Status"]);
         // Add a row per time
         for row in rows {
             table.add_row(row);

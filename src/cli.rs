@@ -19,6 +19,8 @@ pub enum Commands {
 
     Complete(CompleteArgs),
 
+    Uncomplete(CompleteArgs),
+
     Clean,
 }
 

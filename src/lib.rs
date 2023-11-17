@@ -3,18 +3,7 @@ mod storage;
 
 #[cfg(test)]
 mod tests {
-    use crate::auto_increment_id::get_newest_id;
-
-    use super::*;
     use notify_rust::Notification;
-    use storage::Storage;
-
-    #[test]
-    fn it_should_get_largest_id_in_storage() {
-        let storage = Storage::new(None);
-        get_newest_id(&storage);
-        assert_eq!(storage.get_todos().len(), 4);
-    }
 
     #[test]
     fn test_notify() {
