@@ -61,7 +61,13 @@ For testing:
 
 
 ## What's left
-1. Search feature
+1. Search and sorting feature
 2. Colored output
 3. Add due date to To-Do
 4. Notification Icons
+
+
+## Contribution
+This is still a very basic todo app.
+Pr is very much welcomed.
+
