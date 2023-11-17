@@ -1,6 +1,6 @@
 [package]
 name = "htodo"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["citrus327@outlook.com"]
 homepage = "https://github.com/citrus327/rust_todo"
