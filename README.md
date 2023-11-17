@@ -1,5 +1,7 @@
 # htodo
 
+[![Rust](https://github.com/citrus327/rust_todo/actions/workflows/rust.yml/badge.svg)](https://github.com/citrus327/rust_todo/actions/workflows/rust.yml)
+
 ## Introduction
 
 A simple To-do app that I use to get started with rust lang.
