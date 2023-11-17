@@ -8,6 +8,7 @@ description = "A simple command line To-Do app built with Rust"
 repository = "https://github.com/citrus327/rust_todo"
 license = "MIT"
 keywords = ["Todo", "CLI"]
+exclude = [".vscode/*"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
