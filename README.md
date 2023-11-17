@@ -58,3 +58,10 @@ directories = "5.0" # get path of sys dir
 
 For testing:
 `cargo test -- --test-threads 1`
+
+
+## What's left
+1. Search feature
+2. Colored output
+3. Add due date to To-Do
+4. Notification Icons
