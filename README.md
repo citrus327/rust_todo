@@ -1,21 +1,21 @@
-# rust_todo
+# htodo
 
 ## Introduction
 
 A simple To-do app that I use to get started with rust lang.
 
 To-dos will be stored in a json file under ProjectDir by default.
-MACOS: `/Users/<user_name>/Library/Application Support/RTODO/todo.json`
+MACOS: `/Users/<user_name>/Library/Application Support/htodo/todo.json`
 
 ## Usage
 
 ```bash
-rtodo add "This is a todo"
-rtodo add "This is a todo" --complete
-rtodo complete [id]
-rtodo uncomplete [id]
-rtodo list
-rtodo clean
+htodo add "This is a todo"
+htodo add "This is a todo" --complete
+htodo complete [id]
+htodo uncomplete [id]
+htodo list
+htodo clean
 ```
 
 ## Dependencies
@@ -41,3 +41,7 @@ directories = "5.0" # get path of sys dir
 8. System directories
 9. Macros
 
+
+## Tests
+
+`cargo test -- --test-threads 1`

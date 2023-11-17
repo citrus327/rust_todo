@@ -26,7 +26,7 @@ fn main() {
 
         Commands::Add(args) => {
             if !is_todo_file_created() {
-                notify("Please run `rtodo init` first to initialize.");
+                notify("Please run `htodo init` first to initialize.");
                 return;
             }
 
@@ -38,7 +38,7 @@ fn main() {
 
         Commands::List => {
             if !is_todo_file_created() {
-                notify("Please run `rtodo init` first to initialize.");
+                notify("Please run `htodo init` first to initialize.");
                 return;
             }
 
@@ -48,7 +48,7 @@ fn main() {
 
         Commands::Complete(args) => {
             if !is_todo_file_created() {
-                notify("Please run `rtodo init` first to initialize.");
+                notify("Please run `htodo init` first to initialize.");
                 return;
             }
             let mut storage: Storage = Storage::new(get_todo_file_path().unwrap().to_str());
@@ -59,7 +59,7 @@ fn main() {
 
         Commands::Clean => {
             if !is_todo_file_created() {
-                notify("Please run `rtodo init` first to initialize.");
+                notify("Please run `htodo init` first to initialize.");
                 return;
             }
             let mut storage: Storage = Storage::new(get_todo_file_path().unwrap().to_str());
@@ -70,7 +70,7 @@ fn main() {
 
         Commands::Uncomplete(args) => {
             if !is_todo_file_created() {
-                notify("Please run `rtodo init` first to initialize.");
+                notify("Please run `htodo init` first to initialize.");
                 return;
             }
             let mut storage: Storage = Storage::new(get_todo_file_path().unwrap().to_str());
