@@ -5,7 +5,8 @@
 A simple To-do app that I use to get started with rust lang.
 
 To-dos will be stored in a json file under ProjectDir by default.
-MACOS: `/Users/<user_name>/Library/Application Support/htodo/todo.json`
+
+macos: `/Users/<user_name>/Library/Application Support/htodo/todo.json`
 
 ## Installation
 
