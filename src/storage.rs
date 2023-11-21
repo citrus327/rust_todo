@@ -9,16 +9,11 @@ extern crate prettytable;
 use crate::auto_increment_id::get_newest_id;
 use crate::dir::get_todo_file_path;
 
-fn read_todos_from_file(location: &PathBuf) -> Result<Vec<Todo>, serde_json::Error> {
-  if let Ok(content) = fs::read_to_string(&location) {
-    let result = serde_json::from_str(content.as_str()).unwrap_or_else(|err| {
-      println!("Failed to read content, {}", err);
-      vec![]
-    });
-    Ok(result)
-  } else {
-    Ok(vec![])
-  }
+fn read_todos_from_file(location: &PathBuf) -> Result<Vec<Todo>, Box<dyn std::error::Error>> {
+  let content = fs::read_to_string(&location)?;
+  let result: Vec<Todo> = serde_json::from_str(content.as_str())?;
+
+  Ok(result)
 }
 
 #[derive(Serialize, Deserialize)]
