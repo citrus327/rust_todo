@@ -4,39 +4,39 @@ use clap::{Args, Parser, Subcommand};
 #[command(author, version, about, long_about = None)]
 #[command(propagate_version = true)]
 pub struct Cli {
-    #[arg(short, long, help = "The relative path of json file")]
-    pub location: Option<String>,
+  #[arg(short, long, help = "The relative path of json file")]
+  pub location: Option<String>,
 
-    #[command(subcommand)]
-    pub commands: Commands,
+  #[command(subcommand)]
+  pub commands: Commands,
 }
 
 #[derive(Subcommand)]
 pub enum Commands {
-    Init,
+  Init,
 
-    Add(AddArgs),
+  Add(AddArgs),
 
-    List,
+  List,
 
-    Complete(CompleteArgs),
+  Complete(CompleteArgs),
 
-    Uncomplete(CompleteArgs),
+  Uncomplete(CompleteArgs),
 
-    Clean,
+  Clean,
 }
 
 #[derive(Args)]
 pub struct AddArgs {
-    #[arg(name = "TODO_NAME", help = "The name of the To-do")]
-    pub name: String,
+  #[arg(name = "TODO_NAME", help = "The name of the To-do")]
+  pub name: String,
 
-    #[arg(short, long)]
-    pub completed: bool,
+  #[arg(short, long)]
+  pub completed: bool,
 }
 
 #[derive(Args)]
 pub struct CompleteArgs {
-    #[arg(name = "TODO_ID", help = "The id of the To-do")]
-    pub id: i32,
+  #[arg(name = "TODO_ID", help = "The id of the To-do")]
+  pub id: i32,
 }
